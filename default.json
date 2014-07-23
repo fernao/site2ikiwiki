@@ -1,0 +1,8 @@
+{
+ "source_dir": "/source/yoursite",
+ "source_address": "http://localhost/yoursite",
+ "source_type": "pmwiki",
+ "output": "/home/fernao/plantas.mdwn",
+ "output_address": "http://localhost/~fernao/plantas",
+ "ikiwiki": "True"
+}

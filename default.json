@@ -1,8 +1,11 @@
 {
- "source_dir": "/source/yoursite",
- "source_address": "http://localhost/yoursite",
+ "sitename": "yoursite",
+ "source_dir": "/path/to/your-old-site",
+ "source_address": "http://localhost/your-old-site",
  "source_type": "pmwiki",
- "output": "/path/to/yoursite-mdwn",
- "output_address": "http://localhost/yoursite",
- "ikiwiki": "True"
+ "ikiwiki_source": "/path/to/mdwn-files-of-new-site",
+ "ikiwiki_dest": "/path/to/your-new-site",
+ "ikiwiki_address": "http://localhost/your-new-site",
+ "ikiwiki": "True",
+ "ikiwiki_version_control": "git"
 }

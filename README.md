@@ -1,7 +1,7 @@
 site2ikiwiki
 ============
 
-A general simple html or wiki converter to markdown and so to ikiwiki.
+A general simple html or wiki converter to markdown and so to ikiwiki (http://ikiwiki.info/).
 
 Initially, designed to convert PmWiki and pure HTML websites.
 
@@ -30,7 +30,8 @@ Example of config file (json format)
  "ikiwiki_source": "/path/to/mdwn-files-of-new-site",
  "ikiwiki_dest": "/path/to/your-new-site",
  "ikiwiki_address": "http://localhost/your-new-site",
- "ikiwiki": "True"
+ "ikiwiki": "True",
+ "ikiwiki_version_control": "git"
 }
 ```
 
@@ -42,6 +43,7 @@ Example of config file (json format)
 - **ikiwiki_dest**: directory for ikiwiki parse html
 - **ikiwiki_address**: web directory of your new ikiwiki site
 - **ikiwiki**: True|False   -> default is true, but if you only want to generate markdown, fill it with "False"
+- **ikiwiki_version_control**: default is GIT, could be others (check it at http://ikiwiki.info/ikiwiki-makerepo/) 
 
 IMPORTANT: because of Json format, every values must me put "inside commas". Otherwise, the config load will fail.
 

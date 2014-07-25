@@ -11,6 +11,8 @@ from create_ikiwiki import CreateIkiwiki
 class Convert:
     valid_types = ['html', 'pmwiki']
     ignore_files = ['.htaccess', '.lastmod', '.flock', '.pageindex']
+    base_config = {}
+    config = {}
     
     def __init__(self, conf_file, options=''):
         
@@ -21,14 +23,27 @@ class Convert:
         self.__create_pages()
         self.__update_links()
         self.__pmwiki2ikiwiki()
+
+        # run aditional passed by config
+        if self.config['additional_script'] != '':
+            additional_script = self.base_config["base_path"] + '/scripts/' + self.config['additional_script']
+            print additional_script
+            try:
+                f = open(additional_script, 'r')
+            except f.DoesNotExists:
+                print 'The file <' + additional_script + '> don\'t exists, exiting!'
+                sys.exit(1)
+                
+            # run it
+            os.system(additional_script)
         
         # execute ikiwiki options
         if self.config['ikiwiki'] == 'True':
             print "-----------------"
             print 'configure ikiwiki'
-            self.__post_ikiwiki()
+            # self.__post_ikiwiki()
     
-    
+
     def set_config(self, conf_file, options):
         print "---------------------------------"
         print 'set_config('+ conf_file + '/' + options + ')'
@@ -38,6 +53,7 @@ class Convert:
             f = open(conf_file, 'r')
         except f.DoesNotExists:
             print 'The file <' + conf_file + '> don\'t exists, exiting!'
+            sys.exit(1)
         
         # try to load json data
         try:
@@ -56,7 +72,9 @@ class Convert:
                 self.__set_type_html()
             elif (self.config['source_type'] == 'pmwiki'):
                 self.__set_type_pmwiki()
-        
+                
+            self.base_config["base_path"] = os.getcwd()
+            
         return True
 
     
@@ -154,6 +172,8 @@ class Convert:
         # copy default home to index.mdwn
         os.chdir(self.config["ikiwiki_source"])
         cmd = "mv Main.HomePage.mdwn index.mdwn"
+        os.system(cmd)
+        cmd = "mv Site.SideBar.mdwn sidebar.mdwn"
         os.system(cmd)
         
         return True

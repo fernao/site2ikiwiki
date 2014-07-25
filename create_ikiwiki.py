@@ -59,6 +59,13 @@ class CreateIkiwiki:
         os.system(cmd)
 
         return True
+    
+    def ikiwiki_conf_defaults(self):
+        ''' 
+        sets some defaults to setup file
+        '''
+        return True
+
 
     def sync_ikiwiki(self):
         print "sync_ikiwiki()"

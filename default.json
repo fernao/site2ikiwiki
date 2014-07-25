@@ -7,5 +7,6 @@
  "ikiwiki_dest": "/path/to/your-new-site",
  "ikiwiki_address": "http://localhost/your-new-site",
  "ikiwiki": "True",
- "ikiwiki_version_control": "git"
+ "ikiwiki_version_control": "git",
+ "additional_script": "example.py"
 }

@@ -6,7 +6,7 @@ import os
 import re
 import urllib
 import json
-import convert_ikiwiki
+from convert_ikiwiki import ConvertIkiwiki
 
 class Convert:
     valid_types = ['html', 'pmwiki']
@@ -21,7 +21,7 @@ class Convert:
         self.__create_pages()
         self.__update_links()
         
-        # execute options
+        # execute ikiwiki options
         if self.config['ikiwiki'] == 'True':
             print "-----------------"
             print 'configure ikiwiki'
@@ -41,9 +41,9 @@ class Convert:
         # try to load json data
         try:
             config = json.loads(f.read())
-        except UnboundLocalError:
-            print "Invalid configuration file"
-            return False
+        except Exception:
+            print >> sys.stderr, "Error: invalid configuration file!"
+            sys.exit(1)
     
         self.config = config
         self.config['url_append'] = ''
@@ -63,9 +63,14 @@ class Convert:
         print "----------------"
         print '__create pages()'
         
+        try:
+            os.listdir(self.config['ikiwiki_source'])
+        except OSError:
+            os.mkdir(self.config['ikiwiki_source'])
+        
         for page in os.listdir(self.config['source_dir']):
             if page not in self.ignore_files:
-                dst = self.config['output'] + '/' + page + '.mdwn'
+                dst = self.config['ikiwiki_source'] + '/' + page + '.mdwn'
                 url = self.config['source_address'] + '/' + self.config['url_append'] + page
                 if self.config['source_type'] == 'pmwiki':
                     url += '?action=markdown'
@@ -94,9 +99,9 @@ class Convert:
         print '--------------'
         print 'update_links()'
         address_src = self.config['source_address'].replace('/', '\/') + '\/index.php?n='
-        address_replace = self.config['output_address'].replace('/', '\/') + '\/'
+        address_replace = self.config['ikiwiki_address'].replace('/', '\/') + '\/'
         
-        cmd = "find '" + self.config['output'] + "' -type f -exec sed -i 's/" + address_src + "/" + address_replace + "/g' {} \;"
+        cmd = "find '" + self.config['ikiwiki_source'] + "' -type f -exec sed -i 's/" + address_src + "/" + address_replace + "/g' {} \;"
         print cmd
         os.system(cmd)
         
@@ -132,6 +137,14 @@ class Convert:
     def __post_ikiwiki(self):
         print "----------------"
         print "__post_ikiwiki()"
+        
+        conf = {
+            "source_dir": self.config["ikiwiki_source"],
+            "dest_dir": self.config["ikiwiki_address"],
+            "sitename": self.config["sitename"]
+            }
+        
+        ikiwiki = ConvertIkiwiki(conf)
         return True
 
 

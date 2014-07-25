@@ -6,7 +6,7 @@ import os
 import re
 import urllib
 import json
-from convert_ikiwiki import ConvertIkiwiki
+from create_ikiwiki import CreateIkiwiki
 
 class Convert:
     valid_types = ['html', 'pmwiki']
@@ -20,6 +20,7 @@ class Convert:
         # try to import pages
         self.__create_pages()
         self.__update_links()
+        self.__pmwiki2ikiwiki()
         
         # execute ikiwiki options
         if self.config['ikiwiki'] == 'True':
@@ -139,14 +140,24 @@ class Convert:
         print "__post_ikiwiki()"
         
         conf = {
-            "source_dir": self.config["ikiwiki_source"],
-            "dest_dir": self.config["ikiwiki_address"],
-            "sitename": self.config["sitename"]
+            "ikiwiki_source": self.config["ikiwiki_source"],
+            "ikiwiki_address": self.config["ikiwiki_address"],
+            "ikiwiki_dest": self.config["ikiwiki_dest"],
+            "sitename": self.config["sitename"],
+            "ikiwiki_version_control": self.config["ikiwiki_version_control"]
             }
         
-        ikiwiki = ConvertIkiwiki(conf)
+        ikiwiki = CreateIkiwiki(conf)
         return True
 
+    def __pmwiki2ikiwiki(self):
+        # copy default home to index.mdwn
+        os.chdir(self.config["ikiwiki_source"])
+        cmd = "mv Main.HomePage.mdwn index.mdwn"
+        os.system(cmd)
+        
+        return True
+    
 
 conf_file = sys.argv[1]
 convert = Convert(conf_file)

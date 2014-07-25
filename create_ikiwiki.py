@@ -8,19 +8,21 @@ import re
 import urllib
 import json
 
-class ConvertIkiwiki:
+class CreateIkiwiki:
 
     def __init__(self, conf):
         print "CreateIkiwiki.__init__()"
-        self.__set_conf(conf)
+        self.__set_config(conf)
         
-        sync_ikiwiki()
+        # create and make it's first sync
+        self.create_ikiwiki()
+        self.sync_ikiwiki()
 
     def __set_config(self, conf):
         self.config = conf
 
     def __get_ikiwiki_setup(self):
-        return self.config["sitename"] + ".setup"
+        return "~/.ikiwiki/" + self.config["sitename"] + ".setup"
 
     def create_ikiwiki(self):
         
@@ -40,7 +42,22 @@ class ConvertIkiwiki:
         cmd = "ikiwiki --verbose " + self.config["ikiwiki_source"] + " " + self.config["ikiwiki_dest"] + " --url=" + self.config["ikiwiki_address"]
         os.system(cmd)
         
+        print "----"
+        print "Creating ikiwiki setup file..."
         
+        cmd = "ikiwiki " + self.config["ikiwiki_source"] + " " + self.config["ikiwiki_dest"] + " --url=" + self.config["ikiwiki_address"] + " --dumpsetup " + self.__get_ikiwiki_setup()
+        os.system(cmd)
+        
+        print "----"
+        print "Creating version system on your new ikiwiki..."
+        version_control_folder = self.config["ikiwiki_source"] + "." + self.config["ikiwiki_version_control"]
+        try:
+            os.listdir(version_control_folder)
+        except OSError:
+            os.mkdir(version_control_folder)
+        cmd = "ikiwiki-makerepo " + self.config["ikiwiki_version_control"] + " " + self.config["ikiwiki_source"] + " " + version_control_folder
+        os.system(cmd)
+
         return True
 
     def sync_ikiwiki(self):

@@ -34,14 +34,14 @@ Example of config file (json format)
 }
 ```
 
-sitename: put your site name (no spaces)
-source_dir: put here the source files of your page/wiki
-source_address: put here the web address (http) of your page/wiki
-source_type: pmwiki|html|...
-ikiwiki_source: directory to generate the markdown of your new ikiwiki site
-ikiwiki_dest: directory for ikiwiki parse html
-ikiwiki_address: web directory of your new ikiwiki site
-ikiwiki: True|False   -> default is true, but if you only want to generate markdown, fill it with "False"
+**sitename**: put your site name (no spaces)
+source_dir**: put here the source files of your page/wiki
+source_address**: put here the web address (http) of your page/wiki
+source_type**: pmwiki|html|...
+**ikiwiki_source**: directory to generate the markdown of your new ikiwiki site
+**ikiwiki_dest**: directory for ikiwiki parse html
+**ikiwiki_addres**s: web directory of your new ikiwiki site
+**ikiwiki**: True|False   -> default is true, but if you only want to generate markdown, fill it with "False"
 
 IMPORTANT: because of Json format, every values must me put "inside commas". Otherwise, the config load will fail.
 

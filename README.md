@@ -18,6 +18,10 @@ cd /path/to/site2ikiwiki
 cp default.json yoursite.json
 
 ```
+
+Example of config file (json format)
+
+```
 {
  "sitename": "yoursite",
  "source_dir": "/path/to/your-old-site",

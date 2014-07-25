@@ -3,7 +3,7 @@ site2ikiwiki
 
 A general simple html or wiki converter to markdown and so to ikiwiki (http://ikiwiki.info/).
 
-Initially, designed to convert PmWiki and pure HTML websites.
+Initially, designed to migrate/import PmWiki and pure HTML websites into ikiwiki.
 
 
 Usage

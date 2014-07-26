@@ -6,13 +6,18 @@ import os
 import re
 import urllib
 import json
+import chardet
+
 from create_ikiwiki import CreateIkiwiki
+import html2text
 
 class Convert:
     valid_types = ['html', 'pmwiki']
     ignore_files = ['.htaccess', '.lastmod', '.flock', '.pageindex']
     base_config = {}
     config = {}
+    accepted_charsets = ['utf-8']
+    default_charset = 'utf-8'
     
     def __init__(self, conf_file, options=''):
         
@@ -22,7 +27,15 @@ class Convert:
         # try to import pages
         self.__create_pages()
         self.__update_links()
-        self.__pmwiki2ikiwiki()
+
+        # pmwiki
+        if self.config['source_type'] == 'pmwiki':
+            self.__pmwiki2ikiwiki()
+        elif self.config['source_type'] == 'html':
+            #
+            print 'import from html'
+            return True
+        
 
         # run aditional passed by config
         if self.config['additional_script'] != '':
@@ -91,12 +104,59 @@ class Convert:
             if page not in self.ignore_files:
                 dst = self.config['ikiwiki_source'] + '/' + page + '.mdwn'
                 url = self.config['source_address'] + '/' + self.config['url_append'] + page
+                
                 if self.config['source_type'] == 'pmwiki':
                     url += '?action=markdown'
                     self.__download_page(url, dst)
+                elif self.config['source_type'] == 'html':
+                    print "importing from html..."
+                    # le arquivo    page
+                    print page
+                    page_src = os.path.join(self.config['source_dir'], page)
+                    try:
+                        f = open(page_src)
+                    except f.DoesNotExists:
+                        print 'The file <' + page_src + '> don\'t exists, exiting!'
+                        sys.exit(1)
+                    
+                    # detect encoding
+                    page_content = f.read()
+                    
+                    original_charset = chardet.detect(page_content)['encoding']
+                    if original_charset not in self.accepted_charsets:
+                        # try to do conversion
+                        text_mdwn = self.__encode_text(page_content, original_charset)
+
+                    # do html conversion to markdown and write file
+                    h = html2text.HTML2Text()
+                    fw = open(dst, 'w')
+                    fw.write(h.handle(text_mdwn))
+                    fw.close() 
+                    sys.exit(1)
                     
         return True    
+
+
+    def __encode_text(self, text, original_charset, new_charset=''):
+        if new_charset == '':
+            new_charset = self.default_charset
+        
+        if original_charset == 'windows-1251':
+            original_charset = 'ascii'
+        
+        text = text.decode(original_charset)
+        print chardet.detect(text)['encoding']
+        print "------------"
+            #        print 'decoded ' + original_charset
+        text = text.encode(new_charset)
+        print 'encoded to ' + new_charset
+        
+        return text
     
+    
+    '''
+    used by wikis or pages that parses via web, like wikis (cgi script etc)
+    '''
     def __download_page(self, url, dst):
         try:
             image_dwl = urllib.urlopen(url)
